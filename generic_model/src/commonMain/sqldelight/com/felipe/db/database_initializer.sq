@@ -1,0 +1,58 @@
+CREATE TABLE user (
+  local_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  birth_date INTEGER,
+  remote_id INTEGER UNIQUE
+);
+
+insertUser:
+INSERT OR REPLACE INTO user (name, birth_date) VALUES ( ?, ?);
+
+insertUserWithRemoteId:
+INSERT OR REPLACE INTO user (name, birth_date, remote_id) VALUES ( ?, ?, ?);
+
+getUserByLocalId:
+SELECT * FROM user WHERE local_id = ?;
+
+getUserByRemoteId:
+SELECT * FROM user WHERE remote_id = ?;
+
+updateUserData:
+UPDATE user SET name = ?, birth_date = ? WHERE local_id = ?;
+
+updateUserRemoteId:
+UPDATE user SET remote_id = ? WHERE local_id = ?;
+
+getUserLikeNamePaged:
+SELECT local_id FROM user WHERE name LIKE CAST(? AS TEXT) LIMIT ? OFFSET ?;
+
+-- SQLDELIGHT HAVE A BUG WITH PAGINATION, NOW IS HARDCODED (WILL BE FIXED LATER)
+getUsersNotUploaded:
+SELECT local_id, name, birth_date FROM user WHERE remote_id IS NULL LIMIT 1000 OFFSET 0;
+
+getUserLikeNameCount:
+SELECT COUNT(local_id) FROM user WHERE name LIKE CAST(? AS TEXT);
+
+selectAll:
+SELECT local_id, name, birth_date, remote_id FROM user ORDER BY local_id ;
+
+selectAllPaged:
+SELECT local_id, name, birth_date, remote_id FROM user ORDER BY local_id LIMIT 100;
+
+getUserViewSnippet:
+SELECT local_id FROM user ORDER BY name ASC LIMIT ? OFFSET ?;
+
+deleteUsersNotUploaded:
+DELETE FROM user WHERE remote_id IS NULL;
+
+getUserCount:
+SELECT COUNT('row_id') FROM user;
+
+deleteAll:
+DELETE FROM user;
+
+deleteUserByLocalId:
+DELETE FROM user WHERE local_id = ?;
+
+deleteUserByRemoteId:
+DELETE FROM user WHERE remote_id = ?;
